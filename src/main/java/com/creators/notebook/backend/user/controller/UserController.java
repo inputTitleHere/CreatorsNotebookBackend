@@ -2,22 +2,24 @@ package com.creators.notebook.backend.user.controller;
 
 import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
+import com.creators.notebook.backend.user.model.data.UserPrivilegeEnum;
 import com.creators.notebook.backend.user.model.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-//@RestController
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
 @Slf4j
 @RequestMapping("/user")
 @RequiredArgsConstructor // 이것을 아래의 private final 필드와 결합하여 자동으로 spring framework가 넣어주게 한다.
 public class UserController {
 
   private final UserService userService;
-  private final BCryptPasswordEncoder bcrypt;
 
   /**
    * Id, password를 받는다.
@@ -27,19 +29,10 @@ public class UserController {
    */
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody UserDTO userDTO){
-    String id = userDTO.getUserId();
-    UserEntity user = userService.findById(id);
-    // 아이디가 없으면 false 반환
-    if(user==null){
-      return ResponseEntity.ok(false);
-    }
-    // 비밀번호가 틀리면 false 반환
-    boolean pwdMatch = bcrypt.matches(userDTO.getUserPassword(), user.getUserPassword());
-    if(!pwdMatch){
-      return ResponseEntity.ok(false);
-    }
+    boolean result = userService.login(new UserEntity(userDTO));
     // 비밀번호가 맞으면. JWT 발급.
-    return ResponseEntity.status(200).body("Login Success");
+    if(result) return ResponseEntity.status(200).body("Login Success");
+    else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failure");
   }
 
   /**
@@ -47,13 +40,22 @@ public class UserController {
    * @param userDTO
    * @return
    */
-  @PostMapping("/Register")
+  @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody UserDTO userDTO){
-    
-
-
-
-    return ResponseEntity.ok("Bleh");
+    log.debug("User DTO = {}",userDTO);
+    UserEntity ue = new UserEntity(userDTO);
+    log.debug("User Entity = {}", ue);
+    boolean result = false;
+    try{
+      result = userService.register(ue);
+    }catch (Exception e){
+      log.error(e.getMessage());
+      Map<String, String> msg = new HashMap<>();
+      msg.put("error", "계정을 생성할 수 없습니다.");
+      msg.put("msg",e.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
+    }
+    return ResponseEntity.ok(result);
   }
 
 }

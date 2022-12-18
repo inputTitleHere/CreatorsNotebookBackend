@@ -1,6 +1,8 @@
 package com.creators.notebook.backend.user.model.data;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicInsert
+@DynamicUpdate
 public class UserEntity {
 
   @Id
@@ -28,8 +32,9 @@ public class UserEntity {
   @Column(name = "user_Name", nullable = false, length = 30)
   private String userName;
 
-  @Column(name = "user_privilege", nullable = false, columnDefinition = "char(2) CHECK (user_privilege in ('AD','T0','T1')) default 'T0'")
-  private UserPrivilege userPrivilege;
+  @Column(name = "user_privilege", columnDefinition = "char(2) CHECK (user_privilege in ('AD','T0','T1')) default 'T0'")
+  @Convert(converter = UserPrivilegeEnumConverter.class)
+  private UserPrivilegeEnum userPrivilegeEnum;
 
   @Column(name = "user_email", nullable = false)
   private String userEmail;
@@ -48,7 +53,7 @@ public class UserEntity {
     this.userId=userDTO.getUserId();
     this.userPassword=userDTO.getUserPassword();
     this.userName=userDTO.getUserName();
-    this.userPrivilege=userDTO.getUserPrivilege();
+    this.userPrivilegeEnum =userDTO.getUserPrivilegeEnum();
     this.userEmail=userDTO.getUserEmail();
     this.userJoinedAt=userDTO.getUserJoinedAt();
     this.userDeletedAt=userDTO.getUserDeletedAt();

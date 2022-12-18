@@ -7,6 +7,6 @@ package com.creators.notebook.backend.user.model.data;
  * T0, T1, ... 등은 일반 유저의 티어를 의미한다.
  * 2022-12-16 기준 T0 만 활용한다.
  */
-public enum UserPrivilege {
+public enum UserPrivilegeEnum {
   AD,T0,T1,
 }
