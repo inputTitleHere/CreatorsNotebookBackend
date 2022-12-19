@@ -7,5 +7,5 @@ public interface UserService {
 
   public boolean register(UserEntity ue);
 
-  boolean login(UserEntity userEntity);
+  UserEntity login(UserEntity userEntity);
 }

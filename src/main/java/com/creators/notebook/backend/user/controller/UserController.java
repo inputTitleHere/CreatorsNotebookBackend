@@ -1,5 +1,6 @@
 package com.creators.notebook.backend.user.controller;
 
+import com.creators.notebook.backend.securityConfig.JwtTokenProvider;
 import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.data.UserPrivilegeEnum;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +24,7 @@ import java.util.Map;
 public class UserController {
 
   private final UserService userService;
+  private final JwtTokenProvider tokenProvider;
 
   /**
    * Id, password를 받는다.
@@ -28,15 +33,26 @@ public class UserController {
    * @return boolean true or false
    */
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody UserDTO userDTO){
-    boolean result = userService.login(new UserEntity(userDTO));
+  public ResponseEntity<?> login(@RequestBody UserDTO userDTO, HttpServletResponse response){
+    UserEntity user = userService.login(new UserEntity(userDTO));
+    if(user!=null) {
+      final String token = tokenProvider.createToken(user);
+      // 쿠키로 설정하기.
+//      Cookie cookie = new Cookie("token",token);
+
+      Map<String, String> responseData = new HashMap<>();
+      responseData.put("token",token);
+      return ResponseEntity.ok().body(responseData);
+    }else{
+      return ResponseEntity.badRequest().body("로그인 정보가 잘못되었습니다.");
+    }
     // 비밀번호가 맞으면. JWT 발급.
-    if(result) return ResponseEntity.status(200).body("Login Success");
-    else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failure");
+//    if(result) return ResponseEntity.status(200).body("Login Success");
+//    else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failure");
   }
 
   /**
-   *
+   * 회원가입 API
    * @param userDTO
    * @return
    */
@@ -45,17 +61,18 @@ public class UserController {
     log.debug("User DTO = {}",userDTO);
     UserEntity ue = new UserEntity(userDTO);
     log.debug("User Entity = {}", ue);
-    boolean result = false;
+    Map<String, Object> msg = new HashMap<>();
     try{
-      result = userService.register(ue);
+      boolean result = userService.register(ue);
     }catch (Exception e){
       log.error(e.getMessage());
-      Map<String, String> msg = new HashMap<>();
-      msg.put("error", "계정을 생성할 수 없습니다.");
-      msg.put("msg",e.getMessage());
+      msg.put("msg", "계정을 생성할 수 없습니다.");
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
     }
-    return ResponseEntity.ok(result);
+    return ResponseEntity.status(HttpStatus.CREATED).body(msg);
   }
+
+
+
 
 }
