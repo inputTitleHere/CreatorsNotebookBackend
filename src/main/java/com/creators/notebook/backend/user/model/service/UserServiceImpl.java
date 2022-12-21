@@ -31,14 +31,18 @@ public class UserServiceImpl implements UserService{
    * @return boolean. true if User Exists. false if User not Exists
    */
   @Override
-  public boolean login(UserEntity userEntity) {
+  public UserEntity login(UserEntity userEntity) {
     UserEntity user = findById(userEntity.getUserId());
     // 아이디가 없으면 false 반환
     if(user==null){
-      return false;
+      return null;
     }
     // 비밀번호가 맞으면 true / 틀리면 false 반환
-    return bcrypt.matches(userEntity.getUserPassword(), user.getUserPassword());
+    if(bcrypt.matches(userEntity.getUserPassword(), user.getUserPassword())){
+      return user;
+    }else{
+      return null;
+    }
   }
 
   @Override

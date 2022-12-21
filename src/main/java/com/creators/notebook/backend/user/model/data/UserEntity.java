@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * Table    : User
  */
 @Entity
-@Table(schema = "public",name = "User")
+@Table(schema = "cndb",name = "User")
 @Data
 @Builder
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class UserEntity {
   @Convert(converter = UserPrivilegeEnumConverter.class)
   private UserPrivilegeEnum userPrivilegeEnum;
 
-  @Column(name = "user_email", nullable = false)
+  @Column(name = "user_email", nullable = false, unique = true)
   private String userEmail;
 
   @Column(name = "user_joined_at", columnDefinition = "timestamp with time zone default current_timestamp")
