@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -22,27 +23,29 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
   private final JwtTokenProvider jwtTokenProvider;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
             .httpBasic().disable()
             .cors().disable()
             .authorizeRequests()
-            .antMatchers("/user/login").anonymous()
-            .antMatchers("/user/register").anonymous()
+              .antMatchers("/").permitAll()
+              .antMatchers("/user/login").anonymous()
+              .antMatchers("/user/register").anonymous()
+              .antMatchers("/user/test").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
             .build();
   }
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-
-//    return (web) -> web.ignoring().antMatchers("/img/**","/lib/**");
-    return (web) -> web.ignoring().antMatchers("/**");
+    return (web) -> web.ignoring().antMatchers("/img/**","/lib/**");
+//    return (web) -> web.ignoring().antMatchers("/**");
   }
 
   /**

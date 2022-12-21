@@ -4,6 +4,7 @@ import com.creators.notebook.backend.securityConfig.JwtTokenProvider;
 import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.data.UserPrivilegeEnum;
+import com.creators.notebook.backend.user.model.data.UserResponseDTO;
 import com.creators.notebook.backend.user.model.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +41,8 @@ public class UserController {
       // 쿠키로 설정하기.
 //      Cookie cookie = new Cookie("token",token);
 
-      Map<String, String> responseData = new HashMap<>();
-      responseData.put("token",token);
-      return ResponseEntity.ok().body(responseData);
+      UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userId(user.getUserId()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
+      return ResponseEntity.ok().body(userResponseDTO);
     }else{
       return ResponseEntity.badRequest().body("로그인 정보가 잘못되었습니다.");
     }
@@ -72,7 +72,11 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(msg);
   }
 
-
+  @GetMapping("/test")
+  public ResponseEntity<?> testUser(){
+    log.debug("USER TEST METHOD");
+    return ResponseEntity.ok("USER TEST COMPLETE");
+  }
 
 
 }

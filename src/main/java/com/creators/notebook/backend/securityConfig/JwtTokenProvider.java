@@ -1,7 +1,6 @@
 package com.creators.notebook.backend.securityConfig;
 
 import com.creators.notebook.backend.user.model.data.UserEntity;
-import com.creators.notebook.backend.user.model.data.UserPrivilegeEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -93,15 +92,14 @@ public class JwtTokenProvider {
    * @param token
    * @return boolean result of parsed token
    */
-  public boolean validateToken(String token) {
+  public String validateTokenAndGetUserId(String token) {
     log.debug("Validating JWT Token");
     try {
-      JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(JWT_SECRET_KEY).build();
-      jwtParser.parseClaimsJwt(token);
-      return true;
+      Claims claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET_KEY).build().parseClaimsJws(token).getBody();
+      return claims.getSubject();
     } catch (Exception e) {
       log.error("Invalid JWT token");
-      return false;
+      return null;
     }
   }
 
