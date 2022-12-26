@@ -3,6 +3,7 @@ package com.creators.notebook.backend.user.model.data;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserResponseDTO {
 
-  private String userId;
+  private UUID userUuid;
   private String userPassword;
   private String userName;
   private UserPrivilegeEnum userPrivilegeEnum;

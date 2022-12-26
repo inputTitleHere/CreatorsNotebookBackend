@@ -1,6 +1,9 @@
 package com.creators.notebook.backend.project.model.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,25 +13,28 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(schema = "cndb",name="Project")
+@Table(name="project")
 @Data
+@Builder
 @DynamicUpdate
 @DynamicInsert
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProjectEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name="proj_id",columnDefinition = "uuid")
-  private UUID projId;
+  @Column(name="project_id",columnDefinition = "uuid")
+  private UUID projectId;
 
-  @Column(name="proj_name", nullable = false)
-  private String projName;
+  @Column(name="project_name", nullable = false)
+  private String projectName;
 
-  @Column(name = "proj_created_at", columnDefinition = "timestamp with time zone default current_timestamp")
-  private LocalDateTime projCreatedAt;
+  @Column(name = "project_created_at", columnDefinition = "timestamp with time zone default current_timestamp")
+  private LocalDateTime projectCreatedAt;
 
-  @Column(name = "proj_updated_at", columnDefinition = "timestamp with time zone")
-  private LocalDateTime projUpdatedAt;
+  @Column(name = "project_updated_at", columnDefinition = "timestamp with time zone")
+  private LocalDateTime projectUpdatedAt;
 
 
 

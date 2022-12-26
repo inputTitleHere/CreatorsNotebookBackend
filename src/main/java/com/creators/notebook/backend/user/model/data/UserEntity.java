@@ -1,11 +1,15 @@
 package com.creators.notebook.backend.user.model.data;
 
+import com.creators.notebook.backend.bridge.userteam.UserTeamEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Database : Postgres
@@ -13,7 +17,7 @@ import java.time.LocalDateTime;
  * Table    : User
  */
 @Entity
-@Table(schema = "cndb",name = "User")
+@Table(name = "user")
 @Data
 @Builder
 @AllArgsConstructor
@@ -23,9 +27,12 @@ import java.time.LocalDateTime;
 public class UserEntity {
 
   @Id
-  @Column(name = "user_id", length = 30)
-  private String userId;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "user_uuid")
+  private UUID userUuid;
 
+  @Column(name = "user_email", nullable = false, unique = true)
+  private String userEmail;
   @Column(name = "user_password", nullable = false)
   private String userPassword;
 
@@ -36,27 +43,30 @@ public class UserEntity {
   @Convert(converter = UserPrivilegeEnumConverter.class)
   private UserPrivilegeEnum userPrivilegeEnum;
 
-  @Column(name = "user_email", nullable = false, unique = true)
-  private String userEmail;
 
   @Column(name = "user_joined_at", columnDefinition = "timestamp with time zone default current_timestamp")
   private LocalDateTime userJoinedAt;
 
-  @Column(name = "user_deleted_at", columnDefinition = "timestamp")
+  @Column(name = "user_deleted_at", columnDefinition = "timestamp with time zone")
   private LocalDateTime userDeletedAt;
+
+  // MappedBy는 연결시킬 다른 엔티티의 변수명(java)를 지칭.
+  @OneToMany(mappedBy = "userEntity")
+  private List<UserTeamEntity> userTeam = new ArrayList<>();
+
 
   /**
    * UserDTO to UserEntity Converter as a Constructor
+   *
    * @param UserDTO userDto
    */
-  public UserEntity (UserDTO userDTO){
-    this.userId=userDTO.getUserId();
-    this.userPassword=userDTO.getUserPassword();
-    this.userName=userDTO.getUserName();
-    this.userPrivilegeEnum =userDTO.getUserPrivilegeEnum();
-    this.userEmail=userDTO.getUserEmail();
-    this.userJoinedAt=userDTO.getUserJoinedAt();
-    this.userDeletedAt=userDTO.getUserDeletedAt();
+  public UserEntity(UserDTO userDTO) {
+    this.userPassword = userDTO.getUserPassword();
+    this.userName = userDTO.getUserName();
+    this.userPrivilegeEnum = userDTO.getUserPrivilegeEnum();
+    this.userEmail = userDTO.getUserEmail();
+    this.userJoinedAt = userDTO.getUserJoinedAt();
+    this.userDeletedAt = userDTO.getUserDeletedAt();
   }
 
 }

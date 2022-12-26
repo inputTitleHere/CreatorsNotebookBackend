@@ -2,8 +2,10 @@ package com.creators.notebook.backend.user.model.service;
 
 import com.creators.notebook.backend.user.model.data.UserEntity;
 
+import java.util.UUID;
+
 public interface UserService {
-  public UserEntity findById(String id);
+  public UserEntity findByUuid(UUID id);
 
   public boolean register(UserEntity ue);
 

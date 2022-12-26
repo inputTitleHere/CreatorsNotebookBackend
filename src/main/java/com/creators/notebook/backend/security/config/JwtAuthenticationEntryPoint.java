@@ -1,4 +1,4 @@
-package com.creators.notebook.backend.securityConfig;
+package com.creators.notebook.backend.security.config;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

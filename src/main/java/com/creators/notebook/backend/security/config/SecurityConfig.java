@@ -1,4 +1,4 @@
-package com.creators.notebook.backend.securityConfig;
+package com.creators.notebook.backend.security.config;
 
 import com.creators.notebook.backend.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,11 +28,11 @@ public class SecurityConfig {
     return http
             .httpBasic().disable()
             .cors().disable()
+            .csrf().disable()
             .authorizeRequests()
               .antMatchers("/").permitAll()
-              .antMatchers("/user/login").anonymous()
-              .antMatchers("/user/register").anonymous()
-              .antMatchers("/user/test").permitAll()
+              .antMatchers("/user/**").anonymous()
+              .antMatchers("/img/**","/lib/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -42,9 +41,9 @@ public class SecurityConfig {
             .build();
   }
 
-  @Bean
+//  @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().antMatchers("/img/**","/lib/**");
+    return (web) -> web.ignoring().antMatchers();
 //    return (web) -> web.ignoring().antMatchers("/**");
   }
 

@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
 
-  private String userId;
+  private UUID userUuid;
   private String userPassword;
   private String userName;
   private UserPrivilegeEnum userPrivilegeEnum;

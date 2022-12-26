@@ -1,9 +1,8 @@
 package com.creators.notebook.backend.user.controller;
 
-import com.creators.notebook.backend.securityConfig.JwtTokenProvider;
+import com.creators.notebook.backend.security.config.JwtTokenProvider;
 import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
-import com.creators.notebook.backend.user.model.data.UserPrivilegeEnum;
 import com.creators.notebook.backend.user.model.data.UserResponseDTO;
 import com.creators.notebook.backend.user.model.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +38,7 @@ public class UserController {
       // 쿠키로 설정하기.
 //      Cookie cookie = new Cookie("token",token);
 
-      UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userId(user.getUserId()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
+      UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userUuid(user.getUserUuid()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
       return ResponseEntity.ok().body(userResponseDTO);
     }else{
       return ResponseEntity.badRequest().body("로그인 정보가 잘못되었습니다.");

@@ -4,10 +4,13 @@ package com.creators.notebook.backend.user.model.service;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.UUID;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -17,12 +20,12 @@ public class UserServiceImpl implements UserService{
 
   /**
    * Id를 기반으로 유저 객체를 찾아온다.
-   * @param id
+   * @param uuid
    * @return
    */
   @Override
-  public UserEntity findById(String id) {
-    return userRepository.findById(id).orElse(null);
+  public UserEntity findByUuid(UUID uuid) {
+    return userRepository.findById(uuid).orElse(null);
   }
 
   /**
@@ -32,7 +35,10 @@ public class UserServiceImpl implements UserService{
    */
   @Override
   public UserEntity login(UserEntity userEntity) {
-    UserEntity user = findById(userEntity.getUserId());
+    //TODO :: find by email으로 변경.
+    UserEntity user = userRepository.findByUserEmail(userEntity.getUserEmail());
+    log.debug("User Found :: {}",user);
+//    UserEntity usertemp = findByUuid(userEntity.getUserUuid());
     // 아이디가 없으면 false 반환
     if(user==null){
       return null;

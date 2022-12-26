@@ -1,4 +1,4 @@
-package com.creators.notebook.backend.securityConfig;
+package com.creators.notebook.backend.security.config;
 
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import io.jsonwebtoken.*;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class JwtTokenProvider {
     Date expireAt = new Date(new Date().getTime()+JWT_EXPIRATION_TIME);
     return Jwts.builder()
             .signWith(JWT_SECRET_KEY, SignatureAlgorithm.HS512)
-            .setSubject(user.getUserId()) // payload에 들어갈 내용
+            .setSubject(user.getUserUuid().toString()) // payload에 들어갈 내용
             .setIssuer("Creators Notebook") // iss
             .setIssuedAt(new Date()) // iat
             .setExpiration(expireAt)

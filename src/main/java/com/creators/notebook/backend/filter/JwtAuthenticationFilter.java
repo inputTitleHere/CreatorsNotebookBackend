@@ -1,6 +1,6 @@
 package com.creators.notebook.backend.filter;
 
-import com.creators.notebook.backend.securityConfig.JwtTokenProvider;
+import com.creators.notebook.backend.security.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -18,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -38,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       String token = parseBearerToken(request);
       log.debug("JWT Filter is running");
       if(token!=null && !token.equalsIgnoreCase("null")){
-        String userId = jwtTokenProvider.validateTokenAndGetUserId(token);
+        UUID userId = UUID.fromString(jwtTokenProvider.validateTokenAndGetUserId(token));
         log.debug("Authenticated User = {}",userId);
         // SecurityContextHolder에 등록.
         AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,null, AuthorityUtils.NO_AUTHORITIES);
