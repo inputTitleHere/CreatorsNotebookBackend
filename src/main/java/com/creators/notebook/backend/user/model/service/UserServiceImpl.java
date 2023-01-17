@@ -1,6 +1,10 @@
 package com.creators.notebook.backend.user.model.service;
 
 
+import com.creators.notebook.backend.team.data.TeamAuth;
+import com.creators.notebook.backend.team.data.TeamEntity;
+import com.creators.notebook.backend.team.data.UserTeamEntity;
+import com.creators.notebook.backend.team.service.TeamService;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +16,13 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackOn = Exception.class)
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder bcrypt;
 
+  private final TeamService teamService;
   /**
    * Id를 기반으로 유저 객체를 찾아온다.
    * @param uuid
@@ -52,14 +57,28 @@ public class UserServiceImpl implements UserService{
   }
 
   @Override
-  public boolean register(UserEntity userEntity) {
+  public UserEntity register(UserEntity userEntity) {
     if(userEntity.getUserPassword()==null){
       throw new IllegalArgumentException("비밀번호는 비어있으면 안됩니다. 이 오류는 잘못된 API접근에 의한 것입니다.");
     }
     userEntity.setUserPassword(bcrypt.encode(userEntity.getUserPassword()));
-    UserEntity result = userRepository.save(userEntity);
+    UserEntity newUser = userRepository.save(userEntity);
 
-    return true;
+    // TeamEntity, UserTeamEntity, UserEntity
+    TeamEntity newTeam = TeamEntity.builder()
+            .teamName("나의 프로젝트")
+            .teamPrivate(true)
+            .build();
+    TeamEntity createdPrivateTeam = teamService.createTeam(newTeam);
+    UserTeamEntity ute = UserTeamEntity.builder()
+            .userUuid(newUser.getUserUuid())
+            .teamUuid(createdPrivateTeam.getTeamUuid())
+            .teamAuth(TeamAuth.CREATOR)
+            .build();
+    log.debug("UTE = {}",ute);
+    UserTeamEntity userTeamRealation = teamService.mapTeam(ute);
+
+    return newUser;
   }
 
 

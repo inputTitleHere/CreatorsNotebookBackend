@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface UserService {
   public UserEntity findByUuid(UUID id);
 
-  public boolean register(UserEntity ue);
+  public UserEntity register(UserEntity ue);
 
   UserEntity login(UserEntity userEntity);
 }

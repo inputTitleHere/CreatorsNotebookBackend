@@ -1,6 +1,10 @@
 package com.creators.notebook.backend.user.controller;
 
 import com.creators.notebook.backend.security.config.JwtTokenProvider;
+import com.creators.notebook.backend.team.data.TeamAuth;
+import com.creators.notebook.backend.team.data.TeamEntity;
+import com.creators.notebook.backend.team.data.UserTeamEntity;
+import com.creators.notebook.backend.team.service.TeamService;
 import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.data.UserResponseDTO;
@@ -22,25 +26,27 @@ import java.util.Map;
 public class UserController {
 
   private final UserService userService;
+  private final TeamService teamService;
   private final JwtTokenProvider tokenProvider;
 
   /**
    * Id, password를 받는다.
    * 아이디가 존재하고 비밀번호가 맞는다면 true를 반환. 그 외의 경우 false 반환.
+   *
    * @param userDTO
    * @return boolean true or false
    */
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody UserDTO userDTO, HttpServletResponse response){
+  public ResponseEntity<?> login(@RequestBody UserDTO userDTO, HttpServletResponse response) {
     UserEntity user = userService.login(new UserEntity(userDTO));
-    if(user!=null) {
+    if (user != null) {
       final String token = tokenProvider.createToken(user);
       // 쿠키로 설정하기.
 //      Cookie cookie = new Cookie("token",token);
 
       UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userUuid(user.getUserUuid()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
       return ResponseEntity.ok().body(userResponseDTO);
-    }else{
+    } else {
       return ResponseEntity.badRequest().body("로그인 정보가 잘못되었습니다.");
     }
     // 비밀번호가 맞으면. JWT 발급.
@@ -50,27 +56,33 @@ public class UserController {
 
   /**
    * 회원가입 API
+   * 회원가입시 개인 팀을 생성한다.
+   *
    * @param userDTO
    * @return
    */
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody UserDTO userDTO){
-    log.debug("User DTO = {}",userDTO);
+  public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+    log.debug("User DTO = {}", userDTO);
     UserEntity ue = new UserEntity(userDTO);
     log.debug("User Entity = {}", ue);
     Map<String, Object> msg = new HashMap<>();
-    try{
-      boolean result = userService.register(ue);
-    }catch (Exception e){
+
+    try {
+      UserEntity registeredUser = userService.register(ue);
+
+
+    } catch (Exception e) {
       log.error(e.getMessage());
-      msg.put("msg", "계정을 생성할 수 없습니다.");
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
+      msg.put("msg", "계정 생성에 문제가 있었습니다.");
+      throw e;
+//      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
     }
     return ResponseEntity.status(HttpStatus.CREATED).body(msg);
   }
 
   @GetMapping("/test")
-  public ResponseEntity<?> testUser(){
+  public ResponseEntity<?> testUser() {
     log.debug("USER TEST METHOD");
     return ResponseEntity.ok("USER TEST COMPLETE");
   }

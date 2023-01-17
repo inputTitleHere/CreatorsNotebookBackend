@@ -1,4 +1,4 @@
-package com.creators.notebook.backend.bridge.userteam;
+package com.creators.notebook.backend.team.data;
 
 /**
  * action types ::

@@ -1,6 +1,6 @@
 package com.creators.notebook.backend.user.model.data;
 
-import com.creators.notebook.backend.bridge.userteam.UserTeamEntity;
+import com.creators.notebook.backend.team.data.UserTeamEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
