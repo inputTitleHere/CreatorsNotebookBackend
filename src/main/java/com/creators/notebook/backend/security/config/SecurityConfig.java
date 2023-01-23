@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,17 +28,23 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
             .httpBasic().disable()
-            .cors().disable()
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
             .csrf().disable()
-            .authorizeRequests()
+            .authorizeRequests() // 위에 있는 설정이 우선적용된다. 더 자세한 URL을 위로 보내자.
               .antMatchers("/").permitAll()
-              .antMatchers("/user/**").anonymous()
+              .antMatchers("/user/test").authenticated()
+              .antMatchers("/user/test/timed").permitAll()
+            .and()
+            // 제네릭한 것들을 아래에 두고 세세한 것들을 위에 두자.
+            .authorizeRequests()
               .antMatchers("/img/**","/lib/**").permitAll()
-            .anyRequest().authenticated()
+              .antMatchers("/user/**").anonymous()
+              .anyRequest().authenticated()
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .addFilterAfter(jwtAuthenticationFilter, CorsFilter.class)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
   }
 
@@ -55,7 +62,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.addAllowedOrigin("*");
+    config.addAllowedOriginPattern("*");
     config.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE"));
     config.addAllowedHeader("*");
     config.setAllowCredentials(true);

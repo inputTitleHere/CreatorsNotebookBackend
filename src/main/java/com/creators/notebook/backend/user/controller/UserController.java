@@ -11,13 +11,16 @@ import com.creators.notebook.backend.user.model.data.UserResponseDTO;
 import com.creators.notebook.backend.user.model.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -38,21 +41,32 @@ public class UserController {
    */
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody UserDTO userDTO, HttpServletResponse response) {
+
     UserEntity user = userService.login(new UserEntity(userDTO));
     if (user != null) {
-      final String token = tokenProvider.createToken(user);
       // 쿠키로 설정하기.
 //      Cookie cookie = new Cookie("token",token);
 
+      final String token = tokenProvider.createToken(user);
       UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userUuid(user.getUserUuid()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
       return ResponseEntity.ok().body(userResponseDTO);
     } else {
-      return ResponseEntity.badRequest().body("로그인 정보가 잘못되었습니다.");
+      Map<String,String> result = new HashMap<>();
+      result.put("msg","로그인 정보가 잘못되었습니다.");
+      return ResponseEntity.badRequest().body(result);
     }
     // 비밀번호가 맞으면. JWT 발급.
 //    if(result) return ResponseEntity.status(200).body("Login Success");
 //    else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failure");
   }
+
+  /**
+   * 로그아웃
+   * - 프런트 단에서 Authorization 토큰 삭제하는 방향으로 구현?
+   */
+//  @PostMapping("/logout")
+//  public ResponseEntity<?> logout() {
+//  }
 
   /**
    * 회원가입 API
@@ -68,6 +82,13 @@ public class UserController {
     log.debug("User Entity = {}", ue);
     Map<String, Object> msg = new HashMap<>();
 
+    UserEntity findUserByEmail = userService.findByEmail(ue.getUserEmail());
+
+    // 등록된 이메일이면 (프런트단에서 원래 자를것) 등록하지 않음
+    if (findUserByEmail != null) {
+      msg.put("err", "이미 등록된 이메일입니다.");
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(msg);
+    }
     try {
       UserEntity registeredUser = userService.register(ue);
 
@@ -84,7 +105,19 @@ public class UserController {
   @GetMapping("/test")
   public ResponseEntity<?> testUser() {
     log.debug("USER TEST METHOD");
-    return ResponseEntity.ok("USER TEST COMPLETE");
+    UUID user = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    log.debug("User uuid = {} ", user);
+    Map<String, Object> testData = new HashMap<>();
+    testData.put("msg","USER TEST COMPLETE");
+    return ResponseEntity.ok(testData);
+  }
+  @GetMapping("/test/timed")
+  public ResponseEntity<?> testUserTimed() throws Exception{
+    log.debug("Wait 0.5 seconds");
+    Thread.sleep(500);
+    Map<String, String> response = new HashMap<>();
+    response.put("msg","Waited 0.5 seconds");
+    return ResponseEntity.ok(response);
   }
 
 

@@ -10,4 +10,6 @@ public interface UserService {
   public UserEntity register(UserEntity ue);
 
   UserEntity login(UserEntity userEntity);
+
+  UserEntity findByEmail(String userEmail);
 }

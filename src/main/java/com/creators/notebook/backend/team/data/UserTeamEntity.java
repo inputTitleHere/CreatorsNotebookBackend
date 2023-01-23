@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @Entity
 @IdClass(UserTeamPk.class)
-@Data
 @Builder
 @Table(name = "user_team")
 @AllArgsConstructor

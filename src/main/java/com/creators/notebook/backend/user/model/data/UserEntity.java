@@ -18,7 +18,8 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "user")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,7 +52,7 @@ public class UserEntity {
   private LocalDateTime userDeletedAt;
 
   // MappedBy는 연결시킬 다른 엔티티의 변수명(java)를 지칭.
-  @OneToMany(mappedBy = "userEntity")
+  @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
   private List<UserTeamEntity> userTeam = new ArrayList<>();
 
 

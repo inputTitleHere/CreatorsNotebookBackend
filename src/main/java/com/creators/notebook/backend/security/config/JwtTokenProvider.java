@@ -23,7 +23,8 @@ public class JwtTokenProvider {
   // Token 키
   private final Key JWT_SECRET_KEY;
   // JWT 토큰 가용시간.(밀리초)
-  private static final int JWT_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+  private static final int JWT_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7일
+  private static final int JWT_EXPIRATION_TIME_SHORT = 1000 * 60 * 60 * 24; // 1일
 
 
   public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -36,8 +37,8 @@ public class JwtTokenProvider {
    * @param user
    * @return 새로이 생성한 String 형식의 JWT
    */
-  public String createToken(UserEntity user){
-    Date expireAt = new Date(new Date().getTime()+JWT_EXPIRATION_TIME);
+  public String createToken(UserEntity user) {
+    Date expireAt = new Date(new Date().getTime() + JWT_EXPIRATION_TIME);
     return Jwts.builder()
             .signWith(JWT_SECRET_KEY, SignatureAlgorithm.HS512)
             .setSubject(user.getUserUuid().toString()) // payload에 들어갈 내용

@@ -44,9 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // SecurityContextHolder에 등록.
         AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,null, AuthorityUtils.NO_AUTHORITIES);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
-        SecurityContextHolder.setContext(securityContext); // ThreadLocal에 저장된다.
+//        SecurityContextHolder.setContext(securityContext); // ThreadLocal에 저장된다.
+
       }
     }catch(Exception e){
       log.error("Failed to set user Authentication",e);

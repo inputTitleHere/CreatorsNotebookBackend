@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.UUID;
 
@@ -18,13 +19,15 @@ import java.util.UUID;
 @Service
 @Transactional(rollbackOn = Exception.class)
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder bcrypt;
 
   private final TeamService teamService;
+
   /**
    * Id를 기반으로 유저 객체를 찾아온다.
+   *
    * @param uuid
    * @return
    */
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService{
 
   /**
    * 로그인 메소드. Id와 password를 기반으로 데이터베이스 확인.
+   *
    * @param userEntity
    * @return boolean. true if User Exists. false if User not Exists
    */
@@ -42,23 +46,23 @@ public class UserServiceImpl implements UserService{
   public UserEntity login(UserEntity userEntity) {
     //TODO :: find by email으로 변경.
     UserEntity user = userRepository.findByUserEmail(userEntity.getUserEmail());
-    log.debug("User Found :: {}",user);
+    log.debug("User Found :: {}", user);
 //    UserEntity usertemp = findByUuid(userEntity.getUserUuid());
     // 아이디가 없으면 false 반환
-    if(user==null){
+    if (user == null) {
       return null;
     }
     // 비밀번호가 맞으면 true / 틀리면 false 반환
-    if(bcrypt.matches(userEntity.getUserPassword(), user.getUserPassword())){
+    if (bcrypt.matches(userEntity.getUserPassword(), user.getUserPassword())) {
       return user;
-    }else{
+    } else {
       return null;
     }
   }
 
   @Override
   public UserEntity register(UserEntity userEntity) {
-    if(userEntity.getUserPassword()==null){
+    if (userEntity.getUserPassword() == null) {
       throw new IllegalArgumentException("비밀번호는 비어있으면 안됩니다. 이 오류는 잘못된 API접근에 의한 것입니다.");
     }
     userEntity.setUserPassword(bcrypt.encode(userEntity.getUserPassword()));
@@ -75,11 +79,14 @@ public class UserServiceImpl implements UserService{
             .teamUuid(createdPrivateTeam.getTeamUuid())
             .teamAuth(TeamAuth.CREATOR)
             .build();
-    log.debug("UTE = {}",ute);
-    UserTeamEntity userTeamRealation = teamService.mapTeam(ute);
+    log.debug("UTE = {}", ute);
+    UserTeamEntity userTeamRelation = teamService.mapTeam(ute);
 
     return newUser;
   }
 
-
+  @Override
+  public UserEntity findByEmail(String userEmail) {
+    return userRepository.findByUserEmail(userEmail);
+  }
 }
