@@ -1,6 +1,9 @@
 package com.creators.notebook.backend.team.data;
 
 import com.creators.notebook.backend.project.model.data.ProjectEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,10 +45,11 @@ public class TeamEntity {
 
   // User에 대한 논리적 외래키 존재. 물리적으로는 만들지 않겠다.
 
-  @OneToMany(mappedBy = "projectId")
+  @OneToMany(mappedBy = "projectId", fetch = FetchType.EAGER)
   private List<ProjectEntity> projects = new ArrayList<>();
 
-  @OneToMany(mappedBy = "teamEntity")
+  @JsonManagedReference
+  @OneToMany(mappedBy = "teamUuid", fetch = FetchType.LAZY)
   private List<UserTeamEntity> userTeam = new ArrayList<>();
 
 

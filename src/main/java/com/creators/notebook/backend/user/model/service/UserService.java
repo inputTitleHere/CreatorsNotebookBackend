@@ -12,4 +12,6 @@ public interface UserService {
   UserEntity login(UserEntity userEntity);
 
   UserEntity findByEmail(String userEmail);
+
+  UserEntity loadDashboard(UUID id);
 }

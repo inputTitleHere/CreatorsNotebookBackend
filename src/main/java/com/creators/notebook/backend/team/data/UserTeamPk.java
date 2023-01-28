@@ -17,4 +17,6 @@ import java.util.UUID;
 public class UserTeamPk implements Serializable {
   private UUID userUuid;
   private UUID teamUuid;
+//  private UserEntity userEntity;
+//  private TeamEntity teamEntity;
 }

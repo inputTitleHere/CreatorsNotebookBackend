@@ -33,7 +33,11 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public UserEntity findByUuid(UUID uuid) {
-    return userRepository.findById(uuid).orElse(null);
+
+    UserEntity userEntity = userRepository.findById(uuid).orElse(null);
+    log.debug("@UserServiceImpl -> findByUuid -> {}",userEntity.getUserTeamEntities().get(0));
+
+    return userEntity;
   }
 
   /**
@@ -79,6 +83,11 @@ public class UserServiceImpl implements UserService {
             .teamUuid(createdPrivateTeam.getTeamUuid())
             .teamAuth(TeamAuth.CREATOR)
             .build();
+//    UserTeamEntity ute = UserTeamEntity.builder()
+//            .userEntity(newUser)
+//            .teamEntity(createdPrivateTeam)
+//            .teamAuth(TeamAuth.CREATOR)
+//            .build();
     log.debug("UTE = {}", ute);
     UserTeamEntity userTeamRelation = teamService.mapTeam(ute);
 
@@ -89,4 +98,11 @@ public class UserServiceImpl implements UserService {
   public UserEntity findByEmail(String userEmail) {
     return userRepository.findByUserEmail(userEmail);
   }
+
+  @Override
+  public UserEntity loadDashboard(UUID id) {
+    return null;// TODO
+  }
+
+
 }

@@ -1,6 +1,8 @@
 package com.creators.notebook.backend.user.model.data;
 
 import com.creators.notebook.backend.team.data.UserTeamEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -52,8 +54,9 @@ public class UserEntity {
   private LocalDateTime userDeletedAt;
 
   // MappedBy는 연결시킬 다른 엔티티의 변수명(java)를 지칭.
+  @JsonManagedReference
   @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
-  private List<UserTeamEntity> userTeam = new ArrayList<>();
+  private List<UserTeamEntity> userTeamEntities = new ArrayList<>();
 
 
   /**
