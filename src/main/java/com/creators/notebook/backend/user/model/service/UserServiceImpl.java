@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
     // TeamEntity, UserTeamEntity, UserEntity
     TeamEntity newTeam = TeamEntity.builder()
             .teamName("나의 프로젝트")
+            .teamDescription("나만의 개인 프로젝트들입니다.")
             .teamPrivate(true)
             .build();
     TeamEntity createdPrivateTeam = teamService.createTeam(newTeam);

@@ -16,6 +16,9 @@ public class TeamDto {
   private UUID teamUuid;
   private String teamName;
   private boolean teamPrivate;
+  private String teamDescription;
+  private TeamAuth teamAuth;
+
   private List<ProjectEntity> projects;
   private List<UserDTO> userTeam;
 }

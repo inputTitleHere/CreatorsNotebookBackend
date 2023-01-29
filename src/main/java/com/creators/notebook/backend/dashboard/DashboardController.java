@@ -31,8 +31,8 @@ public class DashboardController {
   // FOR TEST TODO
   private final UserTeamRepository userTeamRepository;
 
-  @GetMapping()
-  public ResponseEntity<?> loadDashboard(@AuthenticationPrincipal UUID id) {
+  @GetMapping() // URL : ~/dashboard
+  public ResponseEntity<?> dashboard(@AuthenticationPrincipal UUID id) {
     log.debug("DASHBOARD USER = {}", id);
 //    UserEntity user = userService.loadDashboard(id);
     UserEntity user = userService.findByUuid(id);
@@ -44,13 +44,14 @@ public class DashboardController {
               .teamUuid(te.getTeamUuid())
               .teamName(te.getTeamName())
               .teamPrivate(te.isTeamPrivate())
+              .teamDescription(te.getTeamDescription())
               .projects(te.getProjects())
+              .teamAuth(item.getTeamAuth())
               .build()
       );
     });
-
-
     UserDTO response = UserDTO.builder()
+            .userUuid(user.getUserUuid())
             .userName(user.getUserName())
             .userPrivilegeEnum(user.getUserPrivilegeEnum())
             .teamDtos(teams)

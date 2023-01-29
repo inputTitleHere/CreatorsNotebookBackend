@@ -30,6 +30,9 @@ public class ProjectEntity {
   @Column(name="project_name", nullable = false)
   private String projectName;
 
+  @Column(name = "project_description")
+  private String projectDescription;
+
   @Column(name = "project_created_at", columnDefinition = "timestamp with time zone default current_timestamp")
   private LocalDateTime projectCreatedAt;
 
