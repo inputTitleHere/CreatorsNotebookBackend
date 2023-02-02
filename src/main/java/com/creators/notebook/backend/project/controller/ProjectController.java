@@ -1,11 +1,13 @@
 package com.creators.notebook.backend.project.controller;
 
+import com.creators.notebook.backend.project.model.data.ProjectDto;
+import com.creators.notebook.backend.team.data.TeamDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -18,4 +20,16 @@ public class ProjectController {
     log.debug("Proj.test userID : {}",userId);
     return ResponseEntity.ok(String.format("TEST UserID : %s",userId));
   }
+
+  @PostMapping("/new")
+  public ResponseEntity<?> createNewProject(@RequestBody TeamDto teamDto, @RequestBody ProjectDto projectDto, @AuthenticationPrincipal UUID userId){
+
+
+
+
+    return ResponseEntity.ok(null);
+  }
+
+
+
 }
