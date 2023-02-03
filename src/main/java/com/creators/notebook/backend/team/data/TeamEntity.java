@@ -47,8 +47,7 @@ public class TeamEntity {
   private String teamDescription;
 
   // User에 대한 논리적 외래키 존재. 물리적으로는 만들지 않겠다.
-
-  @OneToMany(mappedBy = "projectId", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "projectId", fetch = FetchType.LAZY)
   private List<ProjectEntity> projects = new ArrayList<>();
 
   @JsonManagedReference
