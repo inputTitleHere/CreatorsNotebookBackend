@@ -28,9 +28,6 @@ public class DashboardController {
 
   private final UserService userService;
 
-  // FOR TEST TODO
-  private final UserTeamRepository userTeamRepository;
-
   @GetMapping() // URL : ~/dashboard
   public ResponseEntity<?> dashboard(@AuthenticationPrincipal UUID id) {
     log.debug("DASHBOARD USER = {}", id);

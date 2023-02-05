@@ -108,9 +108,7 @@ public class UserServiceImpl implements UserService {
     UserEntity user = userRepository.findByUserUuid(id);
     List<TeamDto> teams = new ArrayList<>();
     user.getUserTeamEntities().stream().forEach((item) -> {
-      log.debug("GETTING TEAM ENTITY");
       TeamEntity te = item.getTeamEntity();
-      log.debug("project count = {}", te.getProjects().size());
       teams.add(TeamDto.builder()
               .teamUuid(te.getTeamUuid())
               .teamName(te.getTeamName())

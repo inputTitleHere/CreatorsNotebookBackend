@@ -8,11 +8,13 @@ import com.creators.notebook.backend.team.data.TeamEntity;
 import com.creators.notebook.backend.utils.SimpleMsgResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -54,8 +56,17 @@ public class ProjectController {
     if (projectEntity == null) {
       return ResponseEntity.notFound().build();
     }
-
     return ResponseEntity.ok(projectEntity);
+  }
+
+  @DeleteMapping("/delete")
+  public ResponseEntity<?> deleteProject(@RequestBody ProjectDto projectDto, @AuthenticationPrincipal UUID userUuid) {
+    try {
+      projectService.delete(projectDto, userUuid);
+      return ResponseEntity.ok(null);
+    } catch (IllegalAccessException e) {
+      return new ResponseEntity<String>("삭제 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    }
   }
 
 
