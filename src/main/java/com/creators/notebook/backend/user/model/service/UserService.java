@@ -1,5 +1,6 @@
 package com.creators.notebook.backend.user.model.service;
 
+import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 
 import java.util.UUID;
@@ -13,5 +14,5 @@ public interface UserService {
 
   UserEntity findByEmail(String userEmail);
 
-  UserEntity loadDashboard(UUID id);
+  UserDTO loadDashboard(UUID id);
 }

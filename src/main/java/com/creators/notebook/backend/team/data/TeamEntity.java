@@ -3,6 +3,7 @@ package com.creators.notebook.backend.team.data;
 import com.creators.notebook.backend.project.model.data.ProjectEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties("userTeam")
 public class TeamEntity {
 
   @Id
@@ -46,10 +48,11 @@ public class TeamEntity {
   @Column(name = "team_description")
   private String teamDescription;
 
-  // User에 대한 논리적 외래키 존재. 물리적으로는 만들지 않겠다.
-  @OneToMany(mappedBy = "projectId", fetch = FetchType.LAZY)
+  @JsonManagedReference
+  @OneToMany(mappedBy = "teamEntity", fetch = FetchType.LAZY)
   private List<ProjectEntity> projects = new ArrayList<>();
 
+  // User에 대한 논리적 외래키 존재. 물리적으로는 만들지 않겠다.
   @JsonManagedReference
   @OneToMany(mappedBy = "teamUuid", fetch = FetchType.LAZY)
   private List<UserTeamEntity> userTeam = new ArrayList<>();

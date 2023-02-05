@@ -2,6 +2,7 @@ package com.creators.notebook.backend.user.model.data;
 
 import com.creators.notebook.backend.team.data.UserTeamEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
+@JsonIgnoreProperties("userTeamEntities")
 public class UserEntity {
 
   @Id

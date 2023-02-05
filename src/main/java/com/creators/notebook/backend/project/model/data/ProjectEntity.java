@@ -40,8 +40,11 @@ public class ProjectEntity {
     @Column(name = "project_updated_at", columnDefinition = "timestamp with time zone default current_timestamp")
     private LocalDateTime projectUpdatedAt;
 
+    @Column(name = "project_visibility")
+    private ProjectVisibility projectVisibility;
+
     @ManyToOne
-    @JoinColumn(name = "team_uuid")
+    @JoinColumn(name = "team_uuid",referencedColumnName = "team_uuid",foreignKey = @ForeignKey(name = "fk_team_uuid"))
     private TeamEntity teamEntity;
 
 }

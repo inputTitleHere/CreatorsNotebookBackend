@@ -1,10 +1,13 @@
 package com.creators.notebook.backend.user.model.service;
 
 
+import com.creators.notebook.backend.project.model.data.ProjectDto;
 import com.creators.notebook.backend.team.data.TeamAuth;
+import com.creators.notebook.backend.team.data.TeamDto;
 import com.creators.notebook.backend.team.data.TeamEntity;
 import com.creators.notebook.backend.team.data.UserTeamEntity;
 import com.creators.notebook.backend.team.service.TeamService;
+import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,8 +41,6 @@ public class UserServiceImpl implements UserService {
   public UserEntity findByUuid(UUID uuid) {
 
     UserEntity userEntity = userRepository.findById(uuid).orElse(null);
-    log.debug("@UserServiceImpl -> findByUuid -> {}",userEntity.getUserTeamEntities().get(0));
-
     return userEntity;
   }
 
@@ -48,7 +52,6 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public UserEntity login(UserEntity userEntity) {
-    //TODO :: find by email으로 변경.
     UserEntity user = userRepository.findByUserEmail(userEntity.getUserEmail());
     log.debug("User Found :: {}", user);
 //    UserEntity usertemp = findByUuid(userEntity.getUserUuid());
@@ -101,8 +104,38 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserEntity loadDashboard(UUID id) {
-    return null;// TODO
+  public UserDTO loadDashboard(UUID id) {
+    UserEntity user = userRepository.findByUserUuid(id);
+    List<TeamDto> teams = new ArrayList<>();
+    user.getUserTeamEntities().stream().forEach((item) -> {
+      log.debug("GETTING TEAM ENTITY");
+      TeamEntity te = item.getTeamEntity();
+      log.debug("project count = {}", te.getProjects().size());
+      teams.add(TeamDto.builder()
+              .teamUuid(te.getTeamUuid())
+              .teamName(te.getTeamName())
+              .teamPrivate(te.isTeamPrivate())
+              .teamDescription(te.getTeamDescription())
+              .projects(te.getProjects().stream().map((proj) -> ProjectDto.builder()
+                      .projectId(proj.getProjectId())
+                      .projectName(proj.getProjectName())
+                      .projectDescription(proj.getProjectDescription())
+                      .projectCreatedAt(proj.getProjectCreatedAt())
+                      .projectUpdatedAt(proj.getProjectUpdatedAt())
+                      .build()
+              ).collect(Collectors.toList()))
+              .teamAuth(item.getTeamAuth())
+              .build()
+      );
+    });
+    UserDTO response = UserDTO.builder()
+            .userUuid(user.getUserUuid())
+            .userName(user.getUserName())
+            .userPrivilegeEnum(user.getUserPrivilegeEnum())
+            .teamDtos(teams)
+            .build();
+
+    return response;
   }
 
 

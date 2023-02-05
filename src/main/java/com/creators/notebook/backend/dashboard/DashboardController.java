@@ -35,27 +35,7 @@ public class DashboardController {
   public ResponseEntity<?> dashboard(@AuthenticationPrincipal UUID id) {
     log.debug("DASHBOARD USER = {}", id);
 //    UserEntity user = userService.loadDashboard(id);
-    UserEntity user = userService.findByUuid(id);
-
-    List<TeamDto> teams = new ArrayList<>();
-    user.getUserTeamEntities().stream().forEach((item) -> {
-      TeamEntity te = item.getTeamEntity();
-      teams.add(TeamDto.builder()
-              .teamUuid(te.getTeamUuid())
-              .teamName(te.getTeamName())
-              .teamPrivate(te.isTeamPrivate())
-              .teamDescription(te.getTeamDescription())
-              .projects(te.getProjects())
-              .teamAuth(item.getTeamAuth())
-              .build()
-      );
-    });
-    UserDTO response = UserDTO.builder()
-            .userUuid(user.getUserUuid())
-            .userName(user.getUserName())
-            .userPrivilegeEnum(user.getUserPrivilegeEnum())
-            .teamDtos(teams)
-            .build();
+    UserDTO response = userService.loadDashboard(id);
 
     return ResponseEntity.ok(response);
   }

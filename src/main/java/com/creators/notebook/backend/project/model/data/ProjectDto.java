@@ -20,7 +20,7 @@ public class ProjectDto {
     private String projectDescription;
     private LocalDateTime projectCreatedAt;
     private LocalDateTime projectUpdatedAt;
-    private TeamEntity teamEntity;
+    private UUID teamUuid;
 
 
 }

@@ -5,6 +5,7 @@ import com.creators.notebook.backend.project.model.data.ProjectEntity;
 import com.creators.notebook.backend.project.model.service.ProjectService;
 import com.creators.notebook.backend.team.data.TeamDto;
 import com.creators.notebook.backend.team.data.TeamEntity;
+import com.creators.notebook.backend.utils.SimpleMsgResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,35 +23,40 @@ public class ProjectController {
 
   private final ProjectService projectService;
 
-  // JWT Auth 테스팅용
-  @GetMapping("/proj.test")
-  public ResponseEntity<?> projectTest(@AuthenticationPrincipal String userId){
-    log.debug("Proj.test userID : {}",userId);
-    return ResponseEntity.ok(String.format("TEST UserID : %s",userId));
-  }
-
   /**
    * projectDTO : {
-   *     project name,
+   * project name,
    * }
    */
   @PostMapping("/new")
-  public ResponseEntity<?> createNewProject(@RequestBody TeamDto teamDto, @RequestBody ProjectDto projectDto, @AuthenticationPrincipal UUID userId){
-    log.debug("team UUID to Connect : {}",teamDto.getTeamUuid());
-    LocalDateTime now = LocalDateTime.now();
-    ProjectEntity projectEntity = ProjectEntity.builder()
-            .projectName(projectDto.getProjectName())
-            .projectDescription(projectDto.getProjectDescription())
-            .projectCreatedAt(now)
-            .projectUpdatedAt(now)
-            .teamEntity(TeamEntity.builder().teamUuid(teamDto.getTeamUuid()).build())
-            .build();
-
-    ProjectEntity pe = projectService.save(projectEntity);
-
-    return ResponseEntity.ok(pe);
+  public ResponseEntity<?> createNewProject(@RequestBody ProjectDto projectDto) {
+    log.debug("team UUID to Connect : {}", projectDto.getTeamUuid());
+    try {
+      ProjectEntity pe = projectService.save(projectDto);
+      log.debug("New Project UUID =>  {}", pe.getProjectId());
+      return ResponseEntity.ok(pe);
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().body(SimpleMsgResponse.builder().msg("Failed to create new project").build());
+    }
   }
 
+  /**
+   * 팀 사항이나 공개 여부에 따라 반환여부 설정.
+   *
+   * @param projectId
+   * @return
+   */
+  @GetMapping("/{projectId}")
+  public ResponseEntity<?> getProject(@PathVariable UUID projectId) {
+    log.debug("Received Proj ID = {}", projectId);
+    ProjectEntity projectEntity = projectService.findById(projectId);
+    // 프로젝트가 없으면 null 및 404 반환
+    if (projectEntity == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(projectEntity);
+  }
 
 
 }

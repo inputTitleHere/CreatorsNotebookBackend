@@ -41,9 +41,9 @@ public class UserController {
    * @return boolean true or false
    */
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody UserDTO userDTO, HttpServletResponse response) {
-
-    UserEntity user = userService.login(new UserEntity(userDTO));
+  public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
+  log.debug("USER 정보 : {}",userDTO);
+    UserEntity user = userService.login(UserEntity.builder().userEmail(userDTO.getUserEmail()).userPassword(userDTO.getUserPassword()).build());
     if (user != null) {
       // 쿠키로 설정하기.
 //      Cookie cookie = new Cookie("token",token);
@@ -56,16 +56,7 @@ public class UserController {
       result.put("msg","로그인 정보가 잘못되었습니다.");
       return ResponseEntity.badRequest().body(result);
     }
-    // 비밀번호가 맞으면. JWT 발급.
-//    if(result) return ResponseEntity.status(200).body("Login Success");
-//    else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login Failure");
   }
-
-  /**
-   * 로그아웃
-   * - 프런트 단에서 Authorization 토큰 삭제하는 방향으로 구현?
-   */
-
   /**
    * 회원가입 API
    * 회원가입시 개인 팀을 생성한다.

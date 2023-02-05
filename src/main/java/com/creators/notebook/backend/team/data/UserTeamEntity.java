@@ -16,8 +16,7 @@ import java.util.UUID;
 @Entity
 @IdClass(UserTeamPk.class)
 @Builder
-@Getter
-@Setter
+@Data
 @Table(name = "user_team")
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -35,14 +34,14 @@ public class UserTeamEntity {
   // @ForeignKey는 외래키의 이름을 지정한다.
 //  @Id
   @ManyToOne
-  @JsonBackReference
+  @JsonBackReference(value = "user_uuid")
   @JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid",foreignKey = @ForeignKey(name = "fk_user_uuid"),insertable = false, updatable = false)
 //  @JoinColumn(name = "user_uuid", foreignKey = @ForeignKey(name = "fk_user_uuid"))
   private UserEntity userEntity;
 
 //  @Id
   @ManyToOne
-  @JsonBackReference
+  @JsonBackReference(value="team_uuid")
   @JoinColumn(name = "team_uuid", referencedColumnName = "team_uuid",foreignKey = @ForeignKey(name="fk_team_uuid"),insertable = false, updatable = false)
   private TeamEntity teamEntity;
 

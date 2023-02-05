@@ -2,6 +2,7 @@ package com.creators.notebook.backend.user.model.data;
 
 import com.creators.notebook.backend.team.data.TeamDto;
 import com.creators.notebook.backend.team.data.TeamEntity;
+import com.creators.notebook.backend.team.data.UserTeamEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,6 @@ public class UserDTO {
   private String userEmail;
   private LocalDateTime userJoinedAt;
   private LocalDateTime userDeletedAt;
-
   private List<TeamDto> teamDtos;
 
 }
