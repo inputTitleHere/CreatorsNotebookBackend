@@ -6,9 +6,9 @@ import com.creators.notebook.backend.project.model.data.ProjectEntity;
 import java.util.UUID;
 
 public interface ProjectService {
-  public ProjectEntity save(ProjectDto projectDto);
+  ProjectEntity save(ProjectDto projectDto);
 
-  public ProjectEntity findById(UUID projectId);
+  ProjectEntity findById(UUID projectId);
 
   void delete(ProjectDto projectDto,UUID userUuid) throws IllegalAccessException;
 }

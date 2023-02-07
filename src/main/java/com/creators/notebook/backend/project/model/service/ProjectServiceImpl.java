@@ -43,15 +43,14 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public ProjectEntity findById(UUID projectId) {
-    ProjectEntity result = projectRepository.findById(projectId).orElse(null);
-    return result;
+    return projectRepository.findById(projectId).orElse(null);
   }
 
   @Override
   public void delete(ProjectDto projectDto, UUID userUuid) throws IllegalAccessException {
     try {
-      UserTeamEntity userTeamEntity = userTeamRepository.findById(new UserTeamPk(userUuid, projectDto.getTeamUuid())).orElseThrow();
-      // 삭제시도 사용자가 팀정보상 Creator에 해당되는 경우만 삭제 가능(프런트에서 한번 더 거를 예정)
+      UserTeamEntity userTeamEntity = userTeamRepository.findById(new UserTeamPk(userUuid, projectDto.getTeamUuid())).orElseThrow(IllegalAccessError::new);
+      // 삭제시도 사용자가 팀 정보상 CREATOR 에 해당되는 경우만 삭제 가능(프런트에서 한번 더 거를 예정)
       if(userUuid.equals(userTeamEntity.getUserUuid()) && projectDto.getTeamUuid().equals(userTeamEntity.getTeamUuid())){
         TeamAuth auth = userTeamEntity.getTeamAuth();
         if(auth.equals(TeamAuth.CREATOR) || auth.equals(TeamAuth.ADMIN)){
