@@ -4,8 +4,6 @@ import com.creators.notebook.backend.team.data.TeamEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,8 +22,8 @@ public class ProjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "project_id", columnDefinition = "uuid")
-    private UUID projectId;
+    @Column(name = "project_uuid", columnDefinition = "uuid")
+    private UUID projectUuid;
 
     @Column(name = "project_name", nullable = false)
     private String projectName;

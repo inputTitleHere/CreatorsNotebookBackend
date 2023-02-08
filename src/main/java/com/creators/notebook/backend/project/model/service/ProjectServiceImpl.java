@@ -42,8 +42,8 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  public ProjectEntity findById(UUID projectId) {
-    return projectRepository.findById(projectId).orElse(null);
+  public ProjectEntity findById(UUID projectUuid) {
+    return projectRepository.findById(projectUuid).orElse(null);
   }
 
   @Override
@@ -55,7 +55,7 @@ public class ProjectServiceImpl implements ProjectService {
         TeamAuth auth = userTeamEntity.getTeamAuth();
         if(auth.equals(TeamAuth.CREATOR) || auth.equals(TeamAuth.ADMIN)){
           // 삭제 하기
-          projectRepository.deleteById(projectDto.getProjectId());
+          projectRepository.deleteById(projectDto.getProjectUuid());
         }
       }
     } catch (NoSuchElementException e) {

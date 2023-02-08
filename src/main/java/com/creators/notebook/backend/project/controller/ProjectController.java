@@ -31,7 +31,7 @@ public class ProjectController {
     log.debug("team UUID to Connect : {}", projectDto.getTeamUuid());
     try {
       ProjectEntity pe = projectService.save(projectDto);
-      log.debug("New Project UUID =>  {}", pe.getProjectId());
+      log.debug("New Project UUID =>  {}", pe.getProjectUuid());
       return ResponseEntity.ok(pe);
     } catch (Exception e) {
       return ResponseEntity.internalServerError().body(SimpleMsgResponse.builder().msg("Failed to create new project").build());
@@ -43,9 +43,9 @@ public class ProjectController {
    *
    */
   @GetMapping("/{projectId}")
-  public ResponseEntity<?> getProject(@PathVariable UUID projectId) {
-    log.debug("Received Proj ID = {}", projectId);
-    ProjectEntity projectEntity = projectService.findById(projectId);
+  public ResponseEntity<?> getProject(@PathVariable UUID projectUuid) {
+    log.debug("Received Proj ID = {}", projectUuid);
+    ProjectEntity projectEntity = projectService.findById(projectUuid);
     // 프로젝트가 없으면 null 및 404 반환
     if (projectEntity == null) {
       return ResponseEntity.notFound().build();

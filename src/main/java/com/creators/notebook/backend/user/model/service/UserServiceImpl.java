@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
               .teamPrivate(te.isTeamPrivate())
               .teamDescription(te.getTeamDescription())
               .projects(te.getProjects().stream().map((proj) -> ProjectDto.builder()
-                      .projectId(proj.getProjectId())
+                      .projectUuid(proj.getProjectUuid())
                       .projectName(proj.getProjectName())
                       .projectDescription(proj.getProjectDescription())
                       .projectCreatedAt(proj.getProjectCreatedAt())
