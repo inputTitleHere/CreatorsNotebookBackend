@@ -1,7 +1,6 @@
-package com.creators.notebook.backend.Item.model.dto;
+package com.creators.notebook.backend.Item.model.data;
 
 import com.creators.notebook.backend.project.model.data.ProjectEntity;
-import com.fasterxml.jackson.annotation.JsonTypeId;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.*;

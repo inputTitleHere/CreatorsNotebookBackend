@@ -1,4 +1,4 @@
-package com.creators.notebook.backend.page.model.dto;
+package com.creators.notebook.backend.page.model.data;
 
 public enum PageTypeEnum {
     /**
