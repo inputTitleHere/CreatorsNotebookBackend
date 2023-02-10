@@ -1,7 +1,9 @@
 package com.creators.notebook.backend.page.model.data;
 
 
+import com.creators.notebook.backend.instance.model.data.InstanceEntity;
 import com.creators.notebook.backend.project.model.data.ProjectEntity;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
 import org.hibernate.annotations.*;
@@ -32,20 +34,20 @@ public class PageEntity {
     @Column(name = "page_title", columnDefinition = "text")
     private String pageTitle;
 
-//    페이지 타입 말고 사용자 마음대로 하도록 해보자.
+//    페이지 타입 말고 사용자 마음대로 지정하도록 해보자.
 //    @Column(name = "page_type")
 //    private PageTypeEnum pageTypeEnum;
 
-    @Type(type="json")
-    @Column(name = "page_data",columnDefinition = "jsonb")
-    private List<Location> location;
 
     @ManyToOne
     @JoinColumn(name = "project_uuid", referencedColumnName = "project_uuid", foreignKey = @ForeignKey(name = "fk_project_uuid"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ProjectEntity projectEntity;
 
-    // Relation
+    // Instance
+    @JsonManagedReference
+    @OneToMany(mappedBy = "instanceId", fetch = FetchType.LAZY)
+    private List<InstanceEntity> instanceEntities;
 
 
 }

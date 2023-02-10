@@ -1,6 +1,6 @@
 package com.creators.notebook.backend.Item.model.data;
 
 public enum ItemTypeEnum {
-    CHARACTER,
+    CHARACTER,IMAGE,MAP,RELATION,GROUP,
 
 }
