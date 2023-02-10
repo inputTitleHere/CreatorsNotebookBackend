@@ -28,6 +28,7 @@ public class InstanceEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long instanceId;
 
+
     @OneToOne
     @JoinColumn(name = "item_uuid",referencedColumnName = "item_uuid")
     private ItemEntity itemEntity;
