@@ -1,5 +1,6 @@
 package com.creators.notebook.backend.Item.model.data;
 
+import com.creators.notebook.backend.exception.NoItemException;
 import com.creators.notebook.backend.project.model.data.ProjectEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.*;
@@ -15,11 +16,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@DynamicUpdate
-@DynamicInsert
 @Table(name="item")
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class ItemEntity {
@@ -29,6 +27,7 @@ public class ItemEntity {
   private UUID itemUuid;
 
   @Column(name = "item_type")
+  @Convert(converter = ItemTypeEnumConverter.class)
   private ItemTypeEnum itemTypeEnum;
 
   @Type(type = "json")
@@ -39,5 +38,19 @@ public class ItemEntity {
   @JoinColumn(name="project_uuid",referencedColumnName = "project_uuid")
   @OnDelete(action = OnDeleteAction.CASCADE)
   private ProjectEntity projectEntity;
+
+  public ItemEntity(ItemDto itemDto) throws NoItemException{
+    if(itemDto==null){
+      throw new NoItemException();
+    }
+    this.itemUuid = itemDto.getItemUuid();
+    this.itemTypeEnum = ItemTypeEnum.valueOf(itemDto.getItemTypeString());
+    this.itemData=itemDto.getItemData();
+    if(itemDto.getProjectDto()!=null){
+      this.projectEntity = new ProjectEntity(itemDto.getProjectDto());
+    }
+  }
+
+
 
 }

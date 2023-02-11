@@ -18,6 +18,7 @@ public class ProjectDto {
     private String projectDescription;
     private LocalDateTime projectCreatedAt;
     private LocalDateTime projectUpdatedAt;
+    private ProjectVisibility projectVisibility;
     private UUID teamUuid;
 
 

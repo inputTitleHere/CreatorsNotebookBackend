@@ -16,9 +16,6 @@ import java.util.Map;
 @Table(name = "instance")
 @AllArgsConstructor
 @RequiredArgsConstructor
-@NoArgsConstructor
-@DynamicUpdate
-@DynamicInsert
 @Getter
 @Setter
 @Builder
