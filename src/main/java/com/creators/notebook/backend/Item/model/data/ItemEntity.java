@@ -39,6 +39,11 @@ public class ItemEntity {
   @OnDelete(action = OnDeleteAction.CASCADE)
   private ProjectEntity projectEntity;
 
+  /**
+   * itemDto를 받아 itemEntity를 생성하는 생성자.
+   * @param itemDto
+   * @throws NoItemException
+   */
   public ItemEntity(ItemDto itemDto) throws NoItemException{
     if(itemDto==null){
       throw new NoItemException();

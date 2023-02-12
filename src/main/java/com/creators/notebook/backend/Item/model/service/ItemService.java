@@ -10,4 +10,6 @@ public interface ItemService {
   ItemEntity findById(UUID itemUuid);
 
   void updateItem(ItemEntity itemEntity);
+
+  void deleteItem(ItemEntity itemEntity);
 }

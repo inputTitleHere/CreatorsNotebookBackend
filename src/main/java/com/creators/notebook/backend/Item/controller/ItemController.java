@@ -23,34 +23,40 @@ public class ItemController {
 
   @PostMapping("/new")
   public ResponseEntity<?> createItem(@RequestBody ItemDto itemDto) {
-    ItemEntity itemEntity = itemService.createItem(
-            ItemEntity.builder()
-                    .itemData(itemDto.getItemData())
-                    .itemTypeEnum(ItemTypeEnum.valueOf(itemDto.getItemTypeString()))
-                    .projectEntity(
-                            ProjectEntity.builder().projectUuid(itemDto.getProjectDto().getProjectUuid()).build()
-                    )
-                    .build()
-    );
-
-    return ResponseEntity.ok(itemEntity);
+    try {
+      ItemEntity itemEntity = itemService.createItem(new ItemEntity(itemDto));
+      // TODO -> Entity to DTO
+      return ResponseEntity.ok(itemEntity);
+    } catch (NoItemException e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @GetMapping("/{itemUuid}")
   public ResponseEntity<?> getItem(@PathVariable("itemUuid") UUID itemUuid) {
     ItemEntity itemEntity = itemService.findById(itemUuid);
-    return ResponseEntity.ok(null);
+    // TODO -> ENTITY TO DTO
+    return ResponseEntity.ok(itemEntity);
   }
 
-  @PutMapping("/{itemUuid}")
-  public ResponseEntity<?> updateItem(@PathVariable("itemUuid") UUID itemUuid, @RequestBody ItemDto itemDto) {
+  @PutMapping("/update")
+  public ResponseEntity<?> updateItem(@RequestBody ItemDto itemDto) {
     try {
       itemService.updateItem(new ItemEntity(itemDto));
-      return ResponseEntity.ok(null);
-    }catch (NoItemException e){
+      return ResponseEntity.ok().build();
+    } catch (NoItemException e) {
       return ResponseEntity.badRequest().build();
     }
   }
 
+  @DeleteMapping("/delete")
+  public ResponseEntity<?> deleteItem(@RequestBody ItemDto itemDto) {
+    try {
+      itemService.deleteItem(new ItemEntity(itemDto));
+      return ResponseEntity.ok().build();
+    } catch (NoItemException e) {
+      return ResponseEntity.badRequest().build();
+    }
+  }
 
 }
