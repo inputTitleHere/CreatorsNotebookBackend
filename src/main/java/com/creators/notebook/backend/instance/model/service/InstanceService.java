@@ -8,4 +8,9 @@ public interface InstanceService {
   InstanceEntity save(InstanceEntity instanceEntity);
 
   InstanceEntity findById(UUID instanceUuid);
+
+
+  void deleteInstance(UUID instanceUuid);
+
+  void updateInstance(InstanceEntity instanceEntity);
 }

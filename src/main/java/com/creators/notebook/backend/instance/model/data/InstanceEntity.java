@@ -36,10 +36,6 @@ public class InstanceEntity {
   private ItemEntity itemEntity;
 
   // 좌표 정보는 instanceData으로 다루도록 한다. -> x,y 좌표가 없는 group 소속의 인스턴스 대용.
-//    @Column(name = "xpos", columnDefinition = "integer")
-//    private int xpos;
-//    @Column(name = "ypos", columnDefinition = "integer")
-//    private int ypos;
 
   /**
    * 어떤 페이지에 배정된 instance인지
@@ -50,6 +46,9 @@ public class InstanceEntity {
   @OnDelete(action = OnDeleteAction.CASCADE)
   private PageEntity pageEntity;
 
+  /**
+   * 인스턴스의 각종 데이터
+   */
   @Type(type = "json")
   @Column(name = "instance_data", columnDefinition = "jsonb")
   private Map<String, Object> instanceData;

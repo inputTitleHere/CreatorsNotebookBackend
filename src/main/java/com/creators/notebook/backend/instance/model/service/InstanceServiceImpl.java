@@ -24,4 +24,14 @@ public class InstanceServiceImpl implements InstanceService{
   public InstanceEntity findById(UUID instanceUuid) {
     return instanceRepository.findById(instanceUuid).orElse(null);
   }
+
+  @Override
+  public void updateInstance(InstanceEntity instanceEntity) {
+    instanceRepository.save(instanceEntity);
+  }
+
+  @Override
+  public void deleteInstance(UUID instanceUuid) {
+    instanceRepository.deleteById(instanceUuid);
+  }
 }

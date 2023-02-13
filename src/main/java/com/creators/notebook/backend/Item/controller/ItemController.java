@@ -25,8 +25,8 @@ public class ItemController {
   public ResponseEntity<?> createItem(@RequestBody ItemDto itemDto) {
     try {
       ItemEntity itemEntity = itemService.createItem(new ItemEntity(itemDto));
-      // TODO -> Entity to DTO
-      return ResponseEntity.ok(itemEntity);
+      itemDto.setItemUuid(itemEntity.getItemUuid());
+      return ResponseEntity.ok(itemDto);
     } catch (NoItemException e) {
       return ResponseEntity.badRequest().build();
     }
@@ -35,8 +35,13 @@ public class ItemController {
   @GetMapping("/{itemUuid}")
   public ResponseEntity<?> getItem(@PathVariable("itemUuid") UUID itemUuid) {
     ItemEntity itemEntity = itemService.findById(itemUuid);
-    // TODO -> ENTITY TO DTO
-    return ResponseEntity.ok(itemEntity);
+    ItemDto itemDto = ItemDto.builder()
+            .itemUuid(itemEntity.getItemUuid())
+            .itemTypeString(itemEntity.getItemTypeEnum().toString())
+            .itemData(itemEntity.getItemData())
+            .build();
+
+    return ResponseEntity.ok(itemDto);
   }
 
   @PutMapping("/update")
