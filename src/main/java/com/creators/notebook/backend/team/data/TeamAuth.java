@@ -11,5 +11,5 @@ package com.creators.notebook.backend.team.data;
  * Creator :: all auth
  */
 public enum TeamAuth {
-  CREATOR, ADMIN, USER
+  CREATOR, ADMIN, MEMBER, WATCHER
 }

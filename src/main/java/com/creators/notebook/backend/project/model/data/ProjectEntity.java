@@ -38,6 +38,9 @@ public class ProjectEntity {
     @Column(name = "project_updated_at", columnDefinition = "timestamp with time zone default current_timestamp")
     private LocalDateTime projectUpdatedAt;
 
+    /**
+     * 프로젝트 공개여부. 이건 그냥 쓰지 말까
+     */
     @Column(name = "project_visibility")
     private ProjectVisibility projectVisibility;
 
