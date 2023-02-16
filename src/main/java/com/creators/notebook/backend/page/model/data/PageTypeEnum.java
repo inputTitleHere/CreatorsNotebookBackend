@@ -10,9 +10,17 @@ public enum PageTypeEnum {
      */
     RELATION,
     /**
+     * 세계관, 
+     */
+    WORLD_OUTLOOK,
+    /**
      * 지도용 페이지
      */
     MAP,
+    /**
+     * 스토리라인 설정 페이지
+     */
+    STORY,
     /**
      * 역사 설정 페이지
      */
