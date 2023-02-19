@@ -41,8 +41,7 @@ public class InstanceController {
     @GetMapping("/{instanceUuid}")
     public ResponseEntity<?> getInstance(@PathVariable("instanceUuid") UUID instanceUuid) {
         InstanceEntity instanceEntity = instanceService.findById(instanceUuid);
-        InstanceDto dto = instanceEntity.toDto();
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(instanceEntity.toDto());
     }
 
     /**
