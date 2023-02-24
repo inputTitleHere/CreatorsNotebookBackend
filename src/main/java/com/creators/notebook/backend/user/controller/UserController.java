@@ -102,6 +102,7 @@ public class UserController {
     testData.put("msg","USER TEST COMPLETE");
     return ResponseEntity.ok(testData);
   }
+  @CrossOrigin
   @GetMapping("/test/timed")
   public ResponseEntity<?> testUserTimed() throws Exception{
     log.debug("Wait 0.5 seconds");

@@ -3,6 +3,7 @@ package com.creators.notebook.backend.instance.model.data;
 import com.creators.notebook.backend.Item.model.data.ItemDto;
 import com.creators.notebook.backend.Item.model.data.ItemEntity;
 import com.creators.notebook.backend.exception.NoItemException;
+import com.creators.notebook.backend.page.model.data.PageDto;
 import com.creators.notebook.backend.page.model.data.PageEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -53,11 +54,29 @@ public class InstanceEntity {
   @Column(name = "instance_data", columnDefinition = "jsonb")
   private Map<String, Object> instanceData;
 
-  public InstanceEntity(InstanceDto instanceDto) throws NoItemException{
+  public InstanceEntity(InstanceDto instanceDto) throws NoItemException {
     this.instanceId = instanceDto.getInstanceId();
     this.itemEntity = new ItemEntity(instanceDto.getItemDto());
     this.pageEntity = new PageEntity(instanceDto.getPageDto());
     this.instanceData = instanceDto.getInstanceData();
   }
+
+  /**
+   * 일단 Item부분은 제외하겠음.
+   *
+   * @return
+   */
+  public InstanceDto toDto() {
+    return InstanceDto.builder()
+            .instanceId(instanceId)
+            .pageDto(
+                    PageDto.builder()
+                            .pageUuid(pageEntity.getPageUuid())
+                            .build()
+            )
+            .instanceData(instanceData)
+            .build();
+  }
+
 
 }

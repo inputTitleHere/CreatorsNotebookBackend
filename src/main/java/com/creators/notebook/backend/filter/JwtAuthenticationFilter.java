@@ -29,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   /**
    * 매번 요청이 들어올 때마다 JWT를 확인한다.
+   *
    * @throws ServletException
    * @throws IOException
    */
@@ -38,31 +39,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       String token = parseBearerToken(request);
       log.debug("JWT Filter is running");
-      if(token!=null && !token.equalsIgnoreCase("null")){
-        UUID userId = UUID.fromString(jwtTokenProvider.validateTokenAndGetUserId(token));
-        log.debug("Authenticated User = {}",userId);
+      if (token != null && !token.equalsIgnoreCase("null")) {
+        String parsedToken = jwtTokenProvider.validateTokenAndGetUserId(token);
+        if (parsedToken != null) {
+          UUID userId = UUID.fromString(parsedToken);
+          log.debug("Authenticated User = {}", userId);
         // SecurityContextHolder에 등록.
-        AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,null, AuthorityUtils.NO_AUTHORITIES);
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
+          AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
+          authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          SecurityContext securityContext = SecurityContextHolder.getContext();
+          securityContext.setAuthentication(authentication);
 //        SecurityContextHolder.setContext(securityContext); // ThreadLocal에 저장된다.
-
+        }
       }
-    }catch(Exception e){
-      log.error("Failed to set user Authentication",e);
+    } catch (Exception e) {
+      log.error("Failed to set user Authentication", e);
     }
-    filterChain.doFilter(request,response);
+    filterChain.doFilter(request, response);
   }
 
   /**
    * request에서 JWT토큰 추출.
+   *
    * @param request
    * @return String BearerToken or null
    */
   private String parseBearerToken(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
-    if(StringUtils.hasText(bearerToken)&&bearerToken.startsWith("Bearer ")){
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7); // "Bearer "(공백포함) 7글자 자르기.
     }
     return null;

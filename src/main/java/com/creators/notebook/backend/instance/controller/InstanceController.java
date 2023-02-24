@@ -36,12 +36,12 @@ public class InstanceController {
 
     /**
      * Read
+     * 개별 인스턴스를 읽는 메소드로 구상 -> 해당 인스턴스의 정보만 가져오기
      */
     @GetMapping("/{instanceUuid}")
     public ResponseEntity<?> getInstance(@PathVariable("instanceUuid") UUID instanceUuid) {
         InstanceEntity instanceEntity = instanceService.findById(instanceUuid);
-        // TODO -> Entity to DTO
-        return ResponseEntity.ok().build(); // TODO -> Return DTO
+        return ResponseEntity.ok(instanceEntity.toDto());
     }
 
     /**
