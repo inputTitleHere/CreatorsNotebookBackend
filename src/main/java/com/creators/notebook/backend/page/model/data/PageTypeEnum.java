@@ -10,7 +10,7 @@ public enum PageTypeEnum {
      */
     RELATION,
     /**
-     * 세계관, 
+     * 세계관,
      */
     WORLD_OUTLOOK,
     /**
