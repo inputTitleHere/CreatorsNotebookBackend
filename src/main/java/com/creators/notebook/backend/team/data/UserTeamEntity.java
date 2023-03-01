@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -36,6 +38,7 @@ public class UserTeamEntity {
   @ManyToOne
   @JsonBackReference(value = "user_uuid")
   @JoinColumn(name = "user_uuid", referencedColumnName = "user_uuid",foreignKey = @ForeignKey(name = "fk_user_uuid"),insertable = false, updatable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
 //  @JoinColumn(name = "user_uuid", foreignKey = @ForeignKey(name = "fk_user_uuid"))
   private UserEntity userEntity;
 
@@ -43,6 +46,7 @@ public class UserTeamEntity {
   @ManyToOne
   @JsonBackReference(value="team_uuid")
   @JoinColumn(name = "team_uuid", referencedColumnName = "team_uuid",foreignKey = @ForeignKey(name="fk_team_uuid"),insertable = false, updatable = false)
+  @OnDelete(action = OnDeleteAction.CASCADE)
   private TeamEntity teamEntity;
 
   // Creator, Admin, User

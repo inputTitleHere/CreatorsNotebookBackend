@@ -9,6 +9,7 @@ import com.creators.notebook.backend.user.model.data.UserDTO;
 import com.creators.notebook.backend.user.model.data.UserEntity;
 import com.creators.notebook.backend.user.model.data.UserResponseDTO;
 import com.creators.notebook.backend.user.model.service.UserService;
+import com.creators.notebook.backend.utils.SimpleMsgResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -42,7 +43,7 @@ public class UserController {
    */
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
-  log.debug("USER 정보 : {}",userDTO);
+    log.debug("USER 정보 : {}", userDTO);
     UserEntity user = userService.login(UserEntity.builder().userEmail(userDTO.getUserEmail()).userPassword(userDTO.getUserPassword()).build());
     if (user != null) {
       // 쿠키로 설정하기.
@@ -52,11 +53,12 @@ public class UserController {
       UserResponseDTO userResponseDTO = UserResponseDTO.builder().token(token).userUuid(user.getUserUuid()).userName(user.getUserName()).userPrivilegeEnum(user.getUserPrivilegeEnum()).build();
       return ResponseEntity.ok().body(userResponseDTO);
     } else {
-      Map<String,String> result = new HashMap<>();
-      result.put("msg","로그인 정보가 잘못되었습니다.");
+      Map<String, String> result = new HashMap<>();
+      result.put("msg", "로그인 정보가 잘못되었습니다.");
       return ResponseEntity.badRequest().body(result);
     }
   }
+
   /**
    * 회원가입 API
    * 회원가입시 개인 팀을 생성한다.
@@ -70,7 +72,6 @@ public class UserController {
     UserEntity ue = new UserEntity(userDTO);
     log.debug("User Entity = {}", ue);
     Map<String, Object> msg = new HashMap<>();
-
     UserEntity findUserByEmail = userService.findByEmail(ue.getUserEmail());
 
     // 등록된 이메일이면 (프런트단에서 원래 자를것) 등록하지 않음
@@ -80,17 +81,16 @@ public class UserController {
     }
     try {
       UserEntity registeredUser = userService.register(ue);
-
-
+      final String token = tokenProvider.createToken(registeredUser);
+      UserResponseDTO urd = UserResponseDTO.builder().token(token).userName(registeredUser.getUserName()).build();
+      return ResponseEntity.status(HttpStatus.CREATED).body(urd);
     } catch (Exception e) {
       log.error(e.getMessage());
       msg.put("msg", "계정 생성에 문제가 있었습니다.");
       throw e;
 //      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(msg);
     }
-    return ResponseEntity.status(HttpStatus.CREATED).body(msg);
   }
-
 
 
   @GetMapping("/test")
@@ -99,16 +99,17 @@ public class UserController {
     UUID user = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     log.debug("User uuid = {} ", user);
     Map<String, Object> testData = new HashMap<>();
-    testData.put("msg","USER TEST COMPLETE");
+    testData.put("msg", "USER TEST COMPLETE");
     return ResponseEntity.ok(testData);
   }
+
   @CrossOrigin
   @GetMapping("/test/timed")
-  public ResponseEntity<?> testUserTimed() throws Exception{
+  public ResponseEntity<?> testUserTimed() throws Exception {
     log.debug("Wait 0.5 seconds");
     Thread.sleep(500);
     Map<String, String> response = new HashMap<>();
-    response.put("msg","Waited 0.5 seconds");
+    response.put("msg", "Waited 0.5 seconds");
     return ResponseEntity.ok(response);
   }
 
